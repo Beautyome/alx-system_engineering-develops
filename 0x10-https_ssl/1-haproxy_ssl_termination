@@ -33,18 +33,18 @@ defaults
 	errorfile 503 /etc/haproxy/errors/503.http
 	errorfile 504 /etc/haproxy/errors/504.http
 
-frontend  ehoneah-frontend-http
+frontend  beautyome-frontend-http
         bind *:80
         mode http
 	http-request set-header X-Forwarded-Proto http
-        default_backend ehoneah-backend
+        default_backend beautyome-backend
 
-frontend ehoneah-frontend-https
-	bind *:443 ssl crt /etc/haproxy/certs/www.ehoneah.tech.pem
+frontend beautyome-frontend-https
+	bind *:443 ssl crt /etc/haproxy/certs/www.beautyome.tech.pem
 	http-request set-header X-Forwarded-Proto https
-	default_backend ehoneah-backend
+	default_backend beautyome-backend
 
-backend ehoneah-backend
+backend beautyome-backend
         balance roundrobin
         server 63210-web-01 3.90.80.254:80 check
         server 63210-web-02 54.174.136.222:80 check
