@@ -40,5 +40,5 @@ listen lb
 	bind :80
 	bind :443 ssl crt /etc/letsencrypt/live/beautyome.tech/combined.pem 
 	balance roundrobin
-	server 81664-web-01 3.90.80.254:80 check
-	server 81664-web-02 54.174.136.222:80 check
+	server 293218-web-01 3.90.80.254:80 check
+	server 293218-web-02 54.174.136.222:80 check
