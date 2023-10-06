@@ -2,7 +2,7 @@ global
 	log /dev/log	local0
 	log /dev/log	local1 notice
 	chroot /var/lib/haproxy
-	stats socket /run/haproxy/admin.sock mode 660 level admin
+	stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
 	stats timeout 30s
 	user haproxy
 	group haproxy
@@ -18,6 +18,9 @@ global
         ssl-default-bind-options ssl-min-ver TLSv1.2 no-tls-tickets
 
 defaults
+	option forwardfor
+	option httpclose
+
 	log	global
 	mode	http
 	option	httplog
@@ -33,19 +36,10 @@ defaults
 	errorfile 503 /etc/haproxy/errors/503.http
 	errorfile 504 /etc/haproxy/errors/504.http
 
-frontend  beautyome-frontend-http
-        bind *:80
-        mode http
-	http-request set-header X-Forwarded-Proto http
-        default_backend beautyome-backend
-
-frontend  beautyome-frontend-https
-	bind *:443 ssl crt /etc/haproxy/certs/www.beautyome.tech.pem
-	http-request set-header X-Forwarded-Proto https
-	http-request redirect scheme https code 301 unless { ssl_fc }
-	default_backend beautyome-backend
-
-backend beautyome-backend
-        balance roundrobin
-        server 63210-web-01 3.90.80.254:80 check
-        server 63210-web-02 54.174.136.222:80 check
+listen lb
+	bind :80
+	bind :443 ssl crt /etc/letsencrypt/live/beautyome.tech/combined.pem
+	http-request redirect code 301 scheme https unless { ssl_fc }
+	balance roundrobin
+	server 81664-web-01 3.90.80.254:80 check
+	server 81664-web-02 54.174.136.222:80 check
