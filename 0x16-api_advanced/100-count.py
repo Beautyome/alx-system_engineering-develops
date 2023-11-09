@@ -1,8 +1,4 @@
 #!/usr/bin/python3
-"""Function to count words in all hot posts of a given Reddit subreddit."""
-import requests
-
-
 def count_words(subreddit, word_list, instances={}, after="", count=0):
     """Prints counts of given words found in hot posts of a given subreddit.
 
@@ -26,7 +22,7 @@ def count_words(subreddit, word_list, instances={}, after="", count=0):
                             allow_redirects=False)
     try:
         results = response.json()
-        if response.status_code == 404:
+        if response.status_code == 404 or results is None:  # Add check for None
             raise Exception
     except Exception:
         print("")
@@ -53,3 +49,4 @@ def count_words(subreddit, word_list, instances={}, after="", count=0):
         [print("{}: {}".format(k, v)) for k, v in instances]
     else:
         count_words(subreddit, word_list, instances, after, count)
+
